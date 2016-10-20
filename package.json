@@ -1,0 +1,35 @@
+{
+  "name": "react-snappy",
+  "version": "0.0.1",
+  "description": "utility for testing react components against html snapshots",
+  "main": "index.js",
+  "scripts": {
+    "pretest": "standard",
+    "test": "ava"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/capaj/react-snappy.git"
+  },
+  "keywords": [
+    "react",
+    "snapshot",
+    "html",
+    "testing",
+    "component"
+  ],
+  "author": "capajj@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/capaj/react-snappy/issues"
+  },
+  "homepage": "https://github.com/capaj/react-snappy#readme",
+  "devDependencies": {
+    "standard": "^8.4.0"
+  },
+  "dependencies": {
+    "enzyme": "^2.5.1",
+    "js-beautify": "^1.6.4",
+    "unexpected": "^10.18.1"
+  }
+}
