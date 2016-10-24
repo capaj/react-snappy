@@ -13,7 +13,7 @@ function getColor (part) {
   return color
 }
 
-function diff (first, second) {
+function diff (first, second, snapshotPath) {
   let c = 0
   jsdiff.diffLines(first, second).forEach((part) => {
     if (part.removed || part.added) {
@@ -21,6 +21,7 @@ function diff (first, second) {
     }
   })
   if (c > 0) {
+    console.error(chalk.red(`${snapshotPath} is different to render output:`))
     jsdiff.diffLines(first, second).forEach((part) => {
       let printOut = part.value
       if ((!part.removed && !part.added) && part.count > 25) {

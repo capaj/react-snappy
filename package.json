@@ -1,6 +1,6 @@
 {
   "name": "react-snappy",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "utility for testing react components against html snapshots",
   "main": "index.js",
   "scripts": {

@@ -4,6 +4,7 @@ const fs = require('fs')
 const path = require('path')
 const chalk = require('chalk')
 const printDiff = require('./print-diff')
+const removeHtmlComments = require('./remove-html-comments')
 
 function getCallerFile () {
   var originalFunc = Error.prepareStackTrace
@@ -32,24 +33,29 @@ function getSnapshotName (caller, reactComponent) {
 
 let snapshotFolder = '../test/snapshots/'
 
+function getHtml (reactComponent) {
+  const wrapper = enzyme.mount(reactComponent)
+  const text = removeHtmlComments(wrapper.html())
+  return beautify.html(text, { indent_size: 2 })
+}
+
 module.exports = {
   setFolder: (folder) => {
     snapshotFolder = folder
   },
   check: (reactComponent) => {
-    const wrapper = enzyme.mount(reactComponent)
-    const html = beautify.html(wrapper.html(), { indent_size: 2 })
+    const html = getHtml(reactComponent)
     const caller = getCallerFile()
     const snapshotName = getSnapshotName(caller, reactComponent)
-    const snapshot = fs.readFileSync(path.join(snapshotFolder, snapshotName), 'utf8')
-    const differences = printDiff(html, snapshot)
+    const snapshotPath = path.join(snapshotFolder, snapshotName)
+    const snapshot = fs.readFileSync(snapshotPath, 'utf8')
+    const differences = printDiff(html, snapshot, snapshotPath)
     if (differences > 0) {
       throw new Error(`Snapshot ${snapshotName} does not match the tested component, there are ${differences} line differences`)
     }
   },
   save: (reactComponent) => {
-    const wrapper = enzyme.mount(reactComponent)
-    const html = beautify.html(wrapper.html(), { indent_size: 2 })
+    const html = getHtml(reactComponent)
     const caller = getCallerFile()
     const snapshotName = getSnapshotName(caller, reactComponent)
     fs.writeFileSync(path.join(snapshotFolder, snapshotName), html)
