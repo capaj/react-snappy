@@ -1,6 +1,6 @@
 {
   "name": "react-snappy",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "utility for testing react components against html snapshots",
   "main": "index.js",
   "scripts": {
@@ -39,6 +39,10 @@
     "js-beautify": "^1.6.4",
     "react-addons-test-utils": "^15.3.2",
     "react-dom": "^15.3.2"
+  },
+  "peerDependencies": {
+     "react": "*",
+     "jsdom": "*"
   },
   "ava": {
     "require": [
