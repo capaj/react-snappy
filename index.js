@@ -6,6 +6,8 @@ const chalk = require('chalk')
 const printDiff = require('./print-diff')
 const removeHtmlComments = require('./remove-html-comments')
 
+let usageCounts = new Map()
+
 function getCallerFile () {
   var originalFunc = Error.prepareStackTrace
   var callerfile
@@ -26,9 +28,17 @@ function getCallerFile () {
 }
 
 function getSnapshotName (caller, reactComponent) {
+  let counter = usageCounts.get(caller)
+  if (!counter) {
+    counter = 1
+  } else {
+    counter++
+  }
+  usageCounts.set(caller, counter)
+
   const propNames = Object.keys(reactComponent.props).join('-')
-  const callerPathCleaned = path.relative(process.cwd(), caller)
-  return `${reactComponent.type.name}_${propNames}_from_${callerPathCleaned}.html`
+  const callerPathCleaned = path.relative(process.cwd(), caller).replace(/\//g, '-')
+  return `${reactComponent.type.name}_${propNames}_${counter}_from_${callerPathCleaned}.html`
 }
 
 let snapshotFolder = '../test/snapshots/'
@@ -40,10 +50,16 @@ function getHtml (reactComponent) {
 }
 
 module.exports = {
-  setFolder: (folder) => {
+  setFolder (folder) {
     snapshotFolder = folder
   },
-  check: (reactComponent) => {
+  resetCounter (path) {
+    usageCounts.set(path, 0)
+  },
+  resetCounters () {
+    usageCounts = new Map()
+  },
+  check (reactComponent) {
     const html = getHtml(reactComponent)
     const caller = getCallerFile()
     const snapshotName = getSnapshotName(caller, reactComponent)
@@ -54,7 +70,7 @@ module.exports = {
       throw new Error(`Snapshot ${snapshotName} does not match the tested component, there are ${differences} line differences`)
     }
   },
-  save: (reactComponent) => {
+  save (reactComponent) {
     const html = getHtml(reactComponent)
     const caller = getCallerFile()
     const snapshotName = getSnapshotName(caller, reactComponent)
