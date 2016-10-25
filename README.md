@@ -28,6 +28,7 @@ For ava, you would do this in a separate file that you require by specifying in 
 
 
 ### check
+Compares render output to the snapshot, if not the same prints out a coloured diff and throws an error.
 ```javascript
 import snappy from 'react-snappy';
 
@@ -35,6 +36,7 @@ snappy.check(<YourComponent/>);
 ```
 
 ### save
+Saves the html snapshot. Use when you want to add a new component check. Then rewrite to `check`
 ```javascript
 snappy.save(<YourComponent/>);
 ```
