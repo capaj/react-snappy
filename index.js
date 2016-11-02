@@ -5,6 +5,7 @@ const path = require('path')
 const chalk = require('chalk')
 const printDiff = require('./print-diff')
 const removeHtmlComments = require('./remove-html-comments')
+const mkdirp = require('mkdirp')
 
 let usageCounts = new Map()
 
@@ -41,12 +42,23 @@ function getSnapshotName (caller, reactComponent) {
   return `${reactComponent.type.name}_${propNames}_${counter}_from_${callerPathCleaned}.html`
 }
 
-let snapshotFolder = '../test/snapshots/'
+let snapshotFolder = './snapshots/'
 
 function getHtml (reactComponent) {
   const wrapper = enzyme.mount(reactComponent)
-  const text = removeHtmlComments(wrapper.html())
+  const rawHtml = wrapper.html()
+  if (!rawHtml) {
+    throw new Error(`no render output from component ${reactComponent.type.name}`)  // you don't want to use snapshot testing for components which don't render anything
+  }
+  const text = removeHtmlComments(rawHtml)
+
   return beautify.html(text, { indent_size: 2 })
+}
+
+function save (snapshotFolder, snapshotName, html) {
+  mkdirp.sync(snapshotFolder)
+  fs.writeFileSync(path.join(snapshotFolder, snapshotName), html)
+  console.log(chalk.green(`${snapshotName} snapshot was successfully saved`))
 }
 
 module.exports = {
@@ -64,6 +76,9 @@ module.exports = {
     const caller = getCallerFile()
     const snapshotName = getSnapshotName(caller, reactComponent)
     const snapshotPath = path.join(snapshotFolder, snapshotName)
+    if (process.env.SNAPPY_SAVE_ALL) {
+      return save(snapshotFolder, snapshotName, html)
+    }
     const snapshot = fs.readFileSync(snapshotPath, 'utf8')
     const differences = printDiff(html, snapshot, snapshotPath)
     if (differences > 0) {
@@ -74,7 +89,6 @@ module.exports = {
     const html = getHtml(reactComponent)
     const caller = getCallerFile()
     const snapshotName = getSnapshotName(caller, reactComponent)
-    fs.writeFileSync(path.join(snapshotFolder, snapshotName), html)
-    console.log(chalk.green(`${snapshotName} snapshot was successfully saved`))
+    save(snapshotFolder, snapshotName, html)
   }
 }

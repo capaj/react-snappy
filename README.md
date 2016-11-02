@@ -36,7 +36,14 @@ snappy.check(<YourComponent/>);
 ```
 
 ### save
-Saves the html snapshot. Use when you want to add a new component check. Then rewrite to `check`
+Saves the html snapshot in the folder `./snapshots` relative to running process current working driectory. You can override this using `setFolder`. Use when you want to add a new component check. Then rewrite to `check`.
+Alternatively you can set envromental variable `SNAPPY_SAVE_ALL` to force every check into a save globally. Use with caution.
 ```javascript
 snappy.save(<YourComponent/>);
+```
+
+### setFolder
+just sets the folder, where snappy will save/look for snapshots. Default value is `snapshots` and it is always relative to the process's current working directory. This is convenient in ava, where each test file has it's own process.
+```javascript
+snappy.setFolder('./mySpecialSnapshotFolder')
 ```
