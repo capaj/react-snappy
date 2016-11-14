@@ -74,6 +74,7 @@ module.exports = {
   setFolder (folder) {
     snapshotFolder = folder
   },
+  setColors: printDiff.setColors,
   resetCounter (path) {
     usageCounts.set(path, 0)
   },
@@ -90,7 +91,7 @@ module.exports = {
       return save(snapshotFolder, snapshotName, html)
     }
     const snapshot = fs.readFileSync(snapshotPath, 'utf8')
-    const differences = printDiff(html, snapshot, snapshotPath)
+    const differences = printDiff.diff(html, snapshot, snapshotPath)
     if (differences > 0) {
       throw new Error(`Snapshot ${snapshotName} does not match the tested component, there are ${differences} line differences`)
     }

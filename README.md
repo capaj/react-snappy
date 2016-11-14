@@ -34,6 +34,17 @@ reinitialize jsdom, html can be any valid html
 snappy.jsdom(html)
 ```
 
+### setColors
+set colors for diffs
+```javascript
+const chalk = require('chalk')
+
+snappy.setColors({
+  added: chalk.red,
+  removed: chalk.green
+})  // this is the default
+```
+
 ## jsdom and babel
 Enzyme's `mount` is used for rendering under the hood, so you need to have `document` and `window` on global scope-react snappy creates this for you like this:
 ```javascript

@@ -2,15 +2,24 @@ const jsdiff = require('diff')
 const {indexOfRegex, lastIndexOfRegex} = require('index-of-regex')
 const chalk = require('chalk')
 
+let diffToColors = {
+  added: chalk.red,
+  removed: chalk.green
+}
+
 function getColor (part) {
   let color = chalk.gray
   if (part.added) {
-    color = chalk.red
+    color = diffToColors.added
   }
   if (part.removed) {
-    color = chalk.green
+    color = diffToColors.removed
   }
   return color
+}
+
+function setColors (userDiffToColors) {
+  diffToColors = userDiffToColors
 }
 
 function diff (first, second, snapshotPath) {
@@ -44,4 +53,7 @@ function diff (first, second, snapshotPath) {
   return c
 }
 
-module.exports = diff
+module.exports = {
+  setColors,
+  diff
+}
