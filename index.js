@@ -6,6 +6,7 @@ const chalk = require('chalk')
 const printDiff = require('./print-diff')
 const removeHtmlComments = require('./remove-html-comments')
 const mkdirp = require('mkdirp')
+const jsdom = require('jsdom')
 
 let usageCounts = new Map()
 
@@ -61,6 +62,14 @@ function save (snapshotFolder, snapshotName, html) {
   console.log(chalk.green(`${snapshotName} snapshot was successfully saved`))
 }
 
+function initJsdom (html = '<html><head></head><body></body></html>') {
+  const doc = jsdom.jsdom(html)
+  const win = doc.defaultView
+  global.document = doc
+  global.window = win
+}
+initJsdom()
+
 module.exports = {
   setFolder (folder) {
     snapshotFolder = folder
@@ -71,6 +80,7 @@ module.exports = {
   resetCounters () {
     usageCounts = new Map()
   },
+  jsdom: initJsdom,
   check (reactComponent) {
     const html = getHtml(reactComponent)
     const caller = getCallerFile()

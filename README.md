@@ -7,26 +7,6 @@ utility for testing react components against html snapshots
 npm i react-snappy -D
 ```
 
-## Usage
-Enzyme's `mount` is used for rendering under the hood, so you need to have `document` and `window` on global scope:
-```javascript
-const doc = jsdom.jsdom('<html><head></head><body></body></html>')
-const win = doc.defaultView
-global.document = doc
-global.window = win
-```
-For ava, you would do this in a separate file that you require by specifying in your `package.json`:
-```json
-"ava": {
-  "require": [
-    "babel-register",
-    "./test/browser-env.js"
-  ],
-  "babel": "inherit"
-}
-```
-
-
 ### check
 Compares render output to the snapshot, if not the same prints out a coloured diff and throws an error.
 ```javascript
@@ -47,3 +27,30 @@ just sets the folder, where snappy will save/look for snapshots. Default value i
 ```javascript
 snappy.setFolder('./mySpecialSnapshotFolder')
 ```
+
+### jsdom
+reinitialize jsdom, html can be any valid html
+```javascript
+snappy.jsdom(html)
+```
+
+## jsdom and babel
+Enzyme's `mount` is used for rendering under the hood, so you need to have `document` and `window` on global scope-react snappy creates this for you like this:
+```javascript
+const doc = jsdom.jsdom('<html><head></head><body></body></html>')
+const win = doc.defaultView
+global.document = doc
+global.window = win
+```
+If you ever need something else in your jsdom, feel free to use the method `jsdom` or just manually rewrite values on `global`.
+
+If you use ava, best practice is in your `package.json`:
+```json
+"ava": {
+  "require": [
+    "babel-register"
+  ],
+  "babel": "inherit"
+}
+```
+so that you have the same babel settings as in your app(`.babelrc`).
