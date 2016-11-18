@@ -1,11 +1,12 @@
 {
   "name": "react-snappy",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "utility for testing react components against html snapshots",
   "main": "index.js",
   "scripts": {
     "pretest": "standard",
-    "test": "ava"
+    "test": "ava",
+    "dev": "ava -w"
   },
   "repository": {
     "type": "git",
@@ -36,7 +37,7 @@
     "react-dom": "^15.3.2"
   },
   "devDependencies": {
-    "ava": "^0.16.0",
+    "ava": "^0.17.0",
     "babel-preset-react-app": "^1.0.0",
     "react": "^15.3.2",
     "standard": "^8.5.0"

@@ -39,7 +39,8 @@ function getSnapshotName (caller, reactComponent) {
   usageCounts.set(caller, counter)
 
   const propNames = Object.keys(reactComponent.props).join('-')
-  const callerPathCleaned = path.relative(process.cwd(), caller).replace(/\//g, '-')
+  const dir = path.dirname(path.relative(process.cwd(), caller))
+  const callerPathCleaned = path.relative(dir, caller).replace(/\//g, '-')
   return `${reactComponent.type.name}_${propNames}_${counter}_from_${callerPathCleaned}.html`
 }
 
@@ -56,9 +57,10 @@ function getHtml (reactComponent) {
   return beautify.html(text, { indent_size: 2 })
 }
 
-function save (snapshotFolder, snapshotName, html) {
-  mkdirp.sync(snapshotFolder)
-  fs.writeFileSync(path.join(snapshotFolder, snapshotName), html)
+function save (relFolder, snapshotName, html) {
+  const snapFolderPath = path.join(relFolder, snapshotFolder)
+  mkdirp.sync(snapFolderPath)
+  fs.writeFileSync(path.join(snapFolderPath, snapshotName), html)
   console.log(chalk.green(`${snapshotName} snapshot was successfully saved`))
 }
 
@@ -86,7 +88,8 @@ module.exports = {
     const html = getHtml(reactComponent)
     const caller = getCallerFile()
     const snapshotName = getSnapshotName(caller, reactComponent)
-    const snapshotPath = path.join(snapshotFolder, snapshotName)
+    const relativePath = path.dirname(path.relative(process.cwd(), caller))
+    const snapshotPath = path.join(relativePath, snapshotFolder, snapshotName)
     if (process.env.SNAPPY_SAVE_ALL) {
       return save(snapshotFolder, snapshotName, html)
     }
@@ -100,6 +103,7 @@ module.exports = {
     const html = getHtml(reactComponent)
     const caller = getCallerFile()
     const snapshotName = getSnapshotName(caller, reactComponent)
-    save(snapshotFolder, snapshotName, html)
+    const relativeDir = path.dirname(path.relative(process.cwd(), caller))
+    save(relativeDir, snapshotName, html)
   }
 }

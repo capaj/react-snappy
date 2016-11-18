@@ -27,13 +27,13 @@ test("throws when component doesn't render anything", (t) => {  // these tests s
 test('can set folder', () => {
   snappy.setFolder('./mySpecialSnapshotFolder')
   snappy.save(<Timer />)
-  fs.unlinkSync('./mySpecialSnapshotFolder/Timer__3_from_react-snappy.spec.js.html')  // clean up after
-  fs.rmdirSync('./mySpecialSnapshotFolder')
+  fs.unlinkSync('./test/mySpecialSnapshotFolder/Timer__3_from_react-snappy.spec.js.html')  // clean up after
+  fs.rmdirSync('./test/mySpecialSnapshotFolder')
 })
 
 test.after(() => {
-  fs.unlinkSync('./snapshots/Timer__1_from_react-snappy.spec.js.html')  // clean up after
-  fs.unlinkSync('./snapshots/Timer_value_2_from_react-snappy.spec.js.html')  // clean up after
+  fs.unlinkSync('./test/snapshots/Timer__1_from_react-snappy.spec.js.html')  // clean up after
+  fs.unlinkSync('./test/snapshots/Timer_value_2_from_react-snappy.spec.js.html')  // clean up after
 })
 
 export default {}
