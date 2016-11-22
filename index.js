@@ -70,7 +70,10 @@ function initJsdom (html = '<html><head></head><body></body></html>') {
   global.document = doc
   global.window = win
 }
-initJsdom()
+
+if (!global.document && !global.window) {
+  initJsdom() // if it already is shimmed
+}
 
 module.exports = {
   setFolder (folder) {
