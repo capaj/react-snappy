@@ -47,8 +47,7 @@ function getSnapshotName (caller, reactComponent) {
 
 let snapshotFolder = './snapshots/'
 
-function getHtml (reactComponent) {
-  const wrapper = enzyme.mount(reactComponent)
+function getHtml (wrapper) {
   const rawHtml = wrapper.html()
   if (!rawHtml) {
     throw new Error(`no render output from component ${reactComponent.type.name}`)  // you don't want to use snapshot testing for components which don't render anything
@@ -93,13 +92,15 @@ module.exports = {
   },
   jsdom: initJsdom,
   check (reactComponent) {
-    const html = getHtml(reactComponent)
+    const wrapper = enzyme.mount(reactComponent)
+    const html = getHtml(wrapper)
     const caller = getCallerFile()
     const snapshotName = getSnapshotName(caller, reactComponent)
     const relativePath = path.dirname(path.relative(process.cwd(), caller))
     const snapshotPath = path.join(relativePath, snapshotFolder, snapshotName)
     if (process.env.SNAPPY_SAVE_ALL) {
-      return save(snapshotFolder, snapshotName, html)
+      save(snapshotFolder, snapshotName, html)
+      return wrapper
     }
     const snapshot = fs.readFileSync(snapshotPath, 'utf8')
     const {differences, diffOut} = printDiff.diff(html, snapshot, snapshotPath)
@@ -111,12 +112,15 @@ module.exports = {
         throw new Error(`Snapshot ${snapshotPath} does not match the tested component, there were ${differences} differences`)
       }
     }
+    return wrapper
   },
   save (reactComponent) {
+    const wrapper = enzyme.mount(reactComponent)
     const html = getHtml(reactComponent)
     const caller = getCallerFile()
     const snapshotName = getSnapshotName(caller, reactComponent)
     const relativeDir = path.dirname(path.relative(process.cwd(), caller))
     save(relativeDir, snapshotName, html)
+    return wrapper
   }
 }

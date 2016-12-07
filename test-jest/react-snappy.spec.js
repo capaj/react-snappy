@@ -5,7 +5,7 @@ import snappy from '../index'
 import fs from 'fs'
 
 it('can save', () => {
-  snappy.save(<Timer />)
+  const wrapper = snappy.save(<Timer />)
   snappy.save(<Timer value={5} />)
 })
 it('can check', () => {

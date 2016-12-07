@@ -1,6 +1,6 @@
 # react-snappy
 
-utility for testing react components against html snapshots
+utility for testing react components against html snapshots, tested in [ava](https://github.com/avajs/ava) and [jest](https://github.com/facebook/jest)
 
 ## install
 ```bash
