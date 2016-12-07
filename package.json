@@ -1,11 +1,11 @@
 {
   "name": "react-snappy",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "utility for testing react components against html snapshots",
   "main": "index.js",
   "scripts": {
     "pretest": "standard",
-    "test": "ava",
+    "test": "ava && jest",
     "dev": "ava -w"
   },
   "repository": {
@@ -28,22 +28,27 @@
   "dependencies": {
     "jsdom": "^9.8.3",
     "chalk": "^1.1.3",
-    "diff": "^3.0.1",
+    "diff": "^3.1.0",
     "enzyme": "^2.6.0",
     "index-of-regex": "^1.0.0",
     "js-beautify": "^1.6.4",
     "mkdirp": "^0.5.1",
-    "react-addons-test-utils": "^15.3.2",
-    "react-dom": "^15.3.2"
+    "react-addons-test-utils": "^15.4.1",
+    "react-dom": "^15.4.1"
   },
   "devDependencies": {
     "ava": "^0.17.0",
-    "babel-preset-react-app": "^1.0.0",
-    "react": "^15.3.2",
-    "standard": "^8.5.0"
+    "babel-preset-react-app": "^2.0.0",
+    "jest": "^17.0.3",
+    "react": "^15.4.1",
+    "standard": "^8.6.0"
   },
   "peerDependencies": {
     "react": "*"
+  },
+  "jest": {
+    "verbose": true,
+    "testPathDirs": ["test-jest"]
   },
   "ava": {
     "require": [

@@ -18,6 +18,16 @@ function getColor (part) {
   return color
 }
 
+function getSign (part) {
+  if (part.added) {
+    return '+'
+  }
+  if (part.removed) {
+    return '-'
+  }
+  return ''
+}
+
 function setColors (userDiffToColors) {
   diffToColors = userDiffToColors
 }
@@ -29,8 +39,14 @@ function diff (first, second, snapshotPath) {
       c++
     }
   })
+  let logOutput = ''
+  const log = (msg) => {
+    logOutput += msg + '\n'
+  }
   if (c > 0) {
-    console.error(chalk.red(`${snapshotPath} is different to render output:`))
+    if (typeof jest !== 'object') {
+      log(chalk.red(`${snapshotPath} is different to render output:`))
+    }
     jsdiff.diffLines(first, second).forEach((part) => {
       let printOut = part.value
       if ((!part.removed && !part.added) && part.count > 25) {
@@ -42,15 +58,18 @@ function diff (first, second, snapshotPath) {
         // console.log(endingPart)
         const beginningPart = part.value.substring(0, indexOfRegex(part.value, /\r?\n/g))
 
-        console.log(getColor(part)(beginningPart))
-        console.log(chalk.yellow(`\n <-- hidden ${hiddenLines} unchanged lines --> \n`))
-        console.log(getColor(part)(endingPart))
+        log(getColor(part)(beginningPart))
+        log(chalk.yellow(`\n <-- hidden ${hiddenLines} unchanged lines --> \n`))
+        log(getColor(part)(endingPart))
       } else {
-        console.log(getColor(part)(printOut))
+        log(getSign(part) + ' ' + getColor(part)(printOut))
       }
     })
   }
-  return c
+  return {
+    differences: c,
+    diffOut: logOutput
+  }
 }
 
 module.exports = {

@@ -1,3 +1,4 @@
+/* global jest */
 const enzyme = require('enzyme')
 const beautify = require('js-beautify')
 const fs = require('fs')
@@ -57,11 +58,15 @@ function getHtml (reactComponent) {
   return beautify.html(text, { indent_size: 2 })
 }
 
+const log = (msg) => {
+  process.stdout.write(`${msg}\n`)
+}
+
 function save (relFolder, snapshotName, html) {
   const snapFolderPath = path.join(relFolder, snapshotFolder)
   mkdirp.sync(snapFolderPath)
   fs.writeFileSync(path.join(snapFolderPath, snapshotName), html)
-  console.log(chalk.green(`${snapshotName} snapshot was successfully saved`))
+  log(chalk.green(`${snapshotName} snapshot was successfully saved`))
 }
 
 function initJsdom (html = '<html><head></head><body></body></html>') {
@@ -97,9 +102,14 @@ module.exports = {
       return save(snapshotFolder, snapshotName, html)
     }
     const snapshot = fs.readFileSync(snapshotPath, 'utf8')
-    const differences = printDiff.diff(html, snapshot, snapshotPath)
+    const {differences, diffOut} = printDiff.diff(html, snapshot, snapshotPath)
     if (differences > 0) {
-      throw new Error(`Snapshot ${snapshotName} does not match the tested component, there are ${differences} line differences`)
+      if (typeof jest === 'object') {
+        throw new Error(`Snapshot ${snapshotPath} does not match the tested component, there are ${differences} differences:\n` + diffOut)
+      } else {
+        console.log(diffOut)
+        throw new Error(`Snapshot ${snapshotPath} does not match the tested component, there were ${differences} differences`)
+      }
     }
   },
   save (reactComponent) {
